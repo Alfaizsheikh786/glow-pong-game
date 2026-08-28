@@ -8,49 +8,61 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: #0b0f19; color: #f1f5f9; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
     
-    header { text-align: center; margin-bottom: 20px; }
-    h1 { font-size: 26px; font-weight: 700; color: #38bdf8; letter-spacing: 0.5px; }
+    header { text-align: center; margin-bottom: 15px; }
+    h1 { font-size: 24px; font-weight: 700; color: #38bdf8; letter-spacing: 0.5px; }
     p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
 
     /* Navigation Grid */
-    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 500px; margin-bottom: 15px; }
-    .menu-btn { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 12px 6px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; }
-    .menu-btn.active, .menu-btn:hover { background: #38bdf8; color: #0b0f19; border-color: #38bdf8; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
+    .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; max-width: 500px; margin-bottom: 15px; }
+    .menu-btn { background: #1e293b; border: 1px solid #334155; color: #cbd5e1; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; }
+    .menu-btn.active, .menu-btn:hover { background: #38bdf8; color: #0b0f19; border-color: #38bdf8; font-weight: bold; }
 
     /* Game Stage */
-    .stage { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; width: 100%; max-width: 500px; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .stage { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; width: 100%; max-width: 500px; min-height: 440px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .game-view { display: none; width: 100%; flex-direction: column; align-items: center; justify-content: center; }
     .game-view.active { display: flex; }
 
     canvas { background: #020617; border-radius: 10px; border: 1px solid #334155; max-width: 100%; }
 
-    /* Tic Tac Toe Grid */
+    /* Mode Selector Bar */
+    .mode-bar { display: flex; gap: 10px; margin-bottom: 8px; width: 100%; justify-content: center; }
+    .mode-btn { background: #1e293b; border: 1px solid #475569; color: #94a3b8; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .mode-btn.active { background: #22c55e; color: #020617; border-color: #22c55e; }
+
+    /* Score Header */
+    .score-board { display: flex; justify-content: space-around; width: 100%; max-width: 360px; font-size: 15px; font-weight: bold; margin-bottom: 6px; }
+    .p1-color { color: #22c55e; }
+    .p2-color { color: #ef4444; }
+
+    /* Winner Message Box */
+    .win-overlay { position: absolute; background: rgba(11, 15, 25, 0.95); border: 2px solid #38bdf8; border-radius: 12px; padding: 20px; text-align: center; display: none; z-index: 10; width: 80%; }
+    .win-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .win-sub { font-size: 14px; color: #94a3b8; margin-bottom: 14px; }
+
+    /* Buttons & Touch Controls */
+    .btn-action { background: #38bdf8; color: #0b0f19; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+    .touch-controls { display: flex; justify-content: space-between; width: 100%; max-width: 360px; margin-top: 10px; }
+    .t-btn { background: #1e293b; border: 1px solid #334155; color: white; padding: 12px 10px; border-radius: 8px; font-weight: bold; flex: 1; margin: 0 4px; text-align: center; }
+
+    /* Other Games */
     .ttt-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 260px; height: 260px; margin: 15px 0; }
     .ttt-cell { background: #1e293b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; cursor: pointer; color: #38bdf8; }
     .ttt-cell.o { color: #f43f5e; }
-
-    /* Memory Match Grid */
     .mem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 280px; margin: 15px 0; }
     .mem-card { height: 60px; background: #1e293b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; }
     .mem-card.flipped { background: #334155; }
-
-    /* Reaction Game */
-    .reaction-box { width: 90%; height: 260px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; cursor: pointer; text-align: center; padding: 20px; background: #dc2626; color: white; }
-
-    .btn-action { background: #38bdf8; color: #0b0f19; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-    .touch-controls { display: flex; justify-content: space-between; width: 100%; max-width: 400px; margin-top: 10px; }
-    .t-btn { background: #1e293b; border: 1px solid #334155; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; flex: 1; margin: 0 4px; text-align: center; }
+    .reaction-box { width: 90%; height: 240px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; cursor: pointer; text-align: center; padding: 20px; background: #dc2626; color: white; }
   </style>
 </head>
 <body>
 
   <header>
     <h1>MINIMAL ARCADE</h1>
-    <p>6 Fun Games in One Place</p>
+    <p>6 Games | 2-Player & Vs Computer</p>
   </header>
 
   <div class="menu-grid">
-    <button class="menu-btn active" onclick="switchGame('pong')">1. 2P Pong</button>
+    <button class="menu-btn active" onclick="switchGame('pong')">1. Pong (2P/AI)</button>
     <button class="menu-btn" onclick="switchGame('snake')">2. Snake</button>
     <button class="menu-btn" onclick="switchGame('ttt')">3. Tic-Tac-Toe</button>
     <button class="menu-btn" onclick="switchGame('reaction')">4. Reaction</button>
@@ -61,17 +73,36 @@
   <div class="stage">
     
     <div id="game-pong" class="game-view active">
-      <canvas id="pongCanvas" width="360" height="300"></canvas>
+      <div class="mode-bar">
+        <button id="mode-ai" class="mode-btn active" onclick="setPongMode('ai')">🤖 Vs Computer</button>
+        <button id="mode-2p" class="mode-btn" onclick="setPongMode('2p')">👥 2 Players</button>
+      </div>
+
+      <div class="score-board">
+        <span class="p1-color">Player 1: <span id="pong-p1-score">0</span></span>
+        <span style="color:#64748b;">Target: 5 Pts</span>
+        <span class="p2-color"><span id="pong-p2-name">Computer</span>: <span id="pong-p2-score">0</span></span>
+      </div>
+
+      <div style="position: relative;">
+        <canvas id="pongCanvas" width="360" height="260"></canvas>
+        <div id="pong-win-box" class="win-overlay">
+          <div id="pong-win-text" class="win-title">PLAYER 1 WINS!</div>
+          <div class="win-sub">Match Finished (First to 5 Points)</div>
+          <button class="btn-action" onclick="resetPongMatch()">Play Again</button>
+        </div>
+      </div>
+
       <div class="touch-controls">
-        <button class="t-btn" onpointerdown="p1Touch=-1" onpointerup="p1Touch=0">P1 Up</button>
-        <button class="t-btn" onpointerdown="p1Touch=1" onpointerup="p1Touch=0">P1 Down</button>
-        <button class="t-btn" onpointerdown="p2Touch=-1" onpointerup="p2Touch=0">P2 Up</button>
-        <button class="t-btn" onpointerdown="p2Touch=1" onpointerup="p2Touch=0">P2 Down</button>
+        <button class="t-btn" onpointerdown="p1Touch=-1" onpointerup="p1Touch=0">P1 ⬆️</button>
+        <button class="t-btn" onpointerdown="p1Touch=1" onpointerup="p1Touch=0">P1 ⬇️</button>
+        <button class="t-btn" id="p2-up-btn" style="display:none;" onpointerdown="p2Touch=-1" onpointerup="p2Touch=0">P2 ⬆️</button>
+        <button class="t-btn" id="p2-down-btn" style="display:none;" onpointerdown="p2Touch=1" onpointerup="p2Touch=0">P2 ⬇️</button>
       </div>
     </div>
 
     <div id="game-snake" class="game-view">
-      <canvas id="snakeCanvas" width="300" height="300"></canvas>
+      <canvas id="snakeCanvas" width="300" height="280"></canvas>
       <div class="touch-controls" style="max-width: 250px; margin-top:8px;">
         <button class="t-btn" onclick="snakeDir({x:0, y:-1})">⬆️</button>
       </div>
@@ -83,7 +114,11 @@
     </div>
 
     <div id="game-ttt" class="game-view">
-      <h3 id="ttt-status" style="font-size:14px; color:#94a3b8;">Player X's Turn</h3>
+      <div class="mode-bar">
+        <button id="ttt-ai-btn" class="mode-btn active" onclick="setTTTMode('ai')">🤖 Vs Computer</button>
+        <button id="ttt-2p-btn" class="mode-btn" onclick="setTTTMode('2p')">👥 2 Players</button>
+      </div>
+      <h3 id="ttt-status" style="font-size:14px; color:#94a3b8; margin: 4px 0;">Player X's Turn</h3>
       <div class="ttt-board" id="ttt-board"></div>
       <button class="btn-action" onclick="initTTT()">Restart</button>
     </div>
@@ -98,7 +133,7 @@
     </div>
 
     <div id="game-bricks" class="game-view">
-      <canvas id="brickCanvas" width="320" height="320"></canvas>
+      <canvas id="brickCanvas" width="320" height="280"></canvas>
       <div class="touch-controls" style="max-width: 300px;">
         <button class="t-btn" onpointerdown="brickDir=-1" onpointerup="brickDir=0">⬅️ Left</button>
         <button class="t-btn" onpointerdown="brickDir=1" onpointerup="brickDir=0">Right ➡️</button>
@@ -108,14 +143,13 @@
   </div>
 
   <script>
-    // Tab Switching
     function switchGame(gameId) {
       document.querySelectorAll('.game-view').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
       document.getElementById('game-' + gameId).classList.add('active');
       event.target.classList.add('active');
       
-      if(gameId === 'pong') initPong();
+      if(gameId === 'pong') resetPongMatch();
       if(gameId === 'snake') initSnake();
       if(gameId === 'ttt') initTTT();
       if(gameId === 'reaction') resetReaction();
@@ -123,31 +157,107 @@
       if(gameId === 'bricks') initBricks();
     }
 
-    /* --- 1. PONG (2P) --- */
+    /* --- 1. PONG WITH AI & SCORE SYSTEM --- */
     let pongCtx = document.getElementById('pongCanvas').getContext('2d');
-    let p1Y = 110, p2Y = 110, bx = 180, by = 150, bsx = 3, bsy = 3, p1Touch = 0, p2Touch = 0;
-    let pongLoopId;
+    let p1Y = 100, p2Y = 100, bx = 180, by = 130, bsx = 3.5, bsy = 3.5;
+    let p1Score = 0, p2Score = 0, pongMode = 'ai', gameOver = false;
+    let p1Touch = 0, p2Touch = 0, pongLoopId;
+
+    function setPongMode(mode) {
+      pongMode = mode;
+      document.getElementById('mode-ai').classList.toggle('active', mode === 'ai');
+      document.getElementById('mode-2p').classList.toggle('active', mode === '2p');
+      document.getElementById('pong-p2-name').innerText = mode === 'ai' ? 'Computer' : 'Player 2';
+      document.getElementById('p2-up-btn').style.display = mode === '2p' ? 'block' : 'none';
+      document.getElementById('p2-down-btn').style.display = mode === '2p' ? 'block' : 'none';
+      resetPongMatch();
+    }
+
+    function resetPongMatch() {
+      p1Score = 0; p2Score = 0; gameOver = false;
+      document.getElementById('pong-p1-score').innerText = '0';
+      document.getElementById('pong-p2-score').innerText = '0';
+      document.getElementById('pong-win-box').style.display = 'none';
+      resetBall();
+      initPong();
+    }
+
+    function resetBall() {
+      bx = 180; by = 130;
+      bsx = (Math.random() > 0.5 ? 1 : -1) * 3.5;
+      bsy = (Math.random() > 0.5 ? 1 : -1) * 3;
+    }
+
     function initPong() {
       cancelAnimationFrame(pongLoopId);
       function loop() {
-        p1Y = Math.max(0, Math.min(240, p1Y + p1Touch * 4));
-        p2Y = Math.max(0, Math.min(240, p2Y + p2Touch * 4));
-        bx += bsx; by += bsy;
-        if(by <= 0 || by >= 290) bsy *= -1;
-        if(bx <= 20 && by >= p1Y && by <= p1Y + 60) bsx = Math.abs(bsx);
-        if(bx >= 330 && by >= p2Y && by <= p2Y + 60) bsx = -Math.abs(bsx);
-        if(bx < 0 || bx > 360) { bx = 180; by = 150; bsx *= -1; }
+        if (!gameOver) {
+          // P1 Movement
+          p1Y = Math.max(0, Math.min(200, p1Y + p1Touch * 4.5));
 
-        pongCtx.clearRect(0,0,360,300);
+          // P2 / AI Movement
+          if (pongMode === 'ai') {
+            let targetY = by - 30;
+            if (p2Y < targetY - 5) p2Y += 3.2;
+            else if (p2Y > targetY + 5) p2Y -= 3.2;
+          } else {
+            p2Y = Math.max(0, Math.min(200, p2Y + p2Touch * 4.5));
+          }
+
+          // Ball Move
+          bx += bsx; by += bsy;
+          if (by <= 0 || by >= 252) bsy *= -1;
+
+          // Paddle Hits
+          if (bx <= 20 && by >= p1Y && by <= p1Y + 60) bsx = Math.abs(bsx) * 1.03;
+          if (bx >= 332 && by >= p2Y && by <= p2Y + 60) bsx = -Math.abs(bsx) * 1.03;
+
+          // Scoring
+          if (bx < 0) {
+            p2Score++;
+            document.getElementById('pong-p2-score').innerText = p2Score;
+            checkWinner();
+            resetBall();
+          } else if (bx > 360) {
+            p1Score++;
+            document.getElementById('pong-p1-score').innerText = p1Score;
+            checkWinner();
+            resetBall();
+          }
+        }
+
+        // Draw Canvas
+        pongCtx.clearRect(0, 0, 360, 260);
+        pongCtx.strokeStyle = '#1e293b'; pongCtx.setLineDash([4, 4]);
+        pongCtx.beginPath(); pongCtx.moveTo(180, 0); pongCtx.lineTo(180, 260); pongCtx.stroke();
+        
+        // Paddles & Ball
         pongCtx.fillStyle = "#22c55e"; pongCtx.fillRect(10, p1Y, 10, 60);
         pongCtx.fillStyle = "#ef4444"; pongCtx.fillRect(340, p2Y, 10, 60);
         pongCtx.fillStyle = "#facc15"; pongCtx.fillRect(bx, by, 8, 8);
+
         pongLoopId = requestAnimationFrame(loop);
       }
       loop();
     }
 
-    /* --- 2. SNAKE --- */
+    function checkWinner() {
+      if (p1Score >= 5 || p2Score >= 5) {
+        gameOver = true;
+        let winText = document.getElementById('pong-win-text');
+        let winBox = document.getElementById('pong-win-box');
+        if (p1Score >= 5) {
+          winText.innerText = "🏆 PLAYER 1 WINS!";
+          winText.style.color = "#22c55e";
+        } else {
+          winText.innerText = pongMode === 'ai' ? "💀 COMPUTER WINS!" : "🏆 PLAYER 2 WINS!";
+          winText.style.color = "#ef4444";
+        }
+        winBox.style.display = 'block';
+      }
+    }
+
+    /* --- 2. SNAKE GAME --- */
     let snakeCtx = document.getElementById('snakeCanvas').getContext('2d');
     let snake = [{x:10, y:10}], food = {x:5, y:5}, sdir = {x:1, y:0}, snakeTimer;
     function initSnake() {
@@ -155,13 +265,13 @@
       snake = [{x:10, y:10}]; sdir = {x:1, y:0};
       snakeTimer = setInterval(() => {
         let head = {x: snake[0].x + sdir.x, y: snake[0].y + sdir.y};
-        if(head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) return initSnake();
+        if(head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 18) return initSnake();
         snake.unshift(head);
         if(head.x === food.x && head.y === food.y) {
-          food = {x: Math.floor(Math.random()*20), y: Math.floor(Math.random()*20)};
+          food = {x: Math.floor(Math.random()*20), y: Math.floor(Math.random()*18)};
         } else { snake.pop(); }
 
-        snakeCtx.clearRect(0,0,300,300);
+        snakeCtx.clearRect(0,0,300,280);
         snakeCtx.fillStyle = "#ef4444"; snakeCtx.fillRect(food.x*15, food.y*15, 14, 14);
         snakeCtx.fillStyle = "#38bdf8";
         snake.forEach(s => snakeCtx.fillRect(s.x*15, s.y*15, 14, 14));
@@ -169,8 +279,14 @@
     }
     function snakeDir(d) { sdir = d; }
 
-    /* --- 3. TIC TAC TOE --- */
-    let tttTurn = 'X', tttState = Array(9).fill(null);
+    /* --- 3. TIC TAC TOE (AI & 2P) --- */
+    let tttTurn = 'X', tttState = Array(9).fill(null), tttMode = 'ai';
+    function setTTTMode(m) {
+      tttMode = m;
+      document.getElementById('ttt-ai-btn').classList.toggle('active', m === 'ai');
+      document.getElementById('ttt-2p-btn').classList.toggle('active', m === '2p');
+      initTTT();
+    }
     function initTTT() {
       tttState = Array(9).fill(null); tttTurn = 'X';
       document.getElementById('ttt-status').innerText = "Player X's Turn";
@@ -178,17 +294,38 @@
       for(let i=0; i<9; i++) {
         let cell = document.createElement('div');
         cell.className = 'ttt-cell';
-        cell.onclick = () => {
-          if(!tttState[i]) {
-            tttState[i] = tttTurn;
-            cell.innerText = tttTurn;
-            cell.classList.add(tttTurn.toLowerCase());
-            tttTurn = tttTurn === 'X' ? 'O' : 'X';
-            document.getElementById('ttt-status').innerText = `Player ${tttTurn}'s Turn`;
-          }
-        };
+        cell.onclick = () => handleTTTMove(i, cell);
         b.appendChild(cell);
       }
+    }
+    function handleTTTMove(i, cell) {
+      if (!tttState[i] && !checkTTTWinner()) {
+        tttState[i] = tttTurn;
+        cell.innerText = tttTurn;
+        cell.classList.add(tttTurn.toLowerCase());
+        if (checkTTTWinner()) {
+          document.getElementById('ttt-status').innerText = `🎉 Player ${tttTurn} Wins!`;
+          return;
+        }
+        tttTurn = tttTurn === 'X' ? 'O' : 'X';
+        document.getElementById('ttt-status').innerText = `Player ${tttTurn}'s Turn`;
+
+        if (tttMode === 'ai' && tttTurn === 'O') {
+          setTimeout(makeAIMove, 300);
+        }
+      }
+    }
+    function makeAIMove() {
+      let empty = tttState.map((v, idx) => v === null ? idx : null).filter(v => v !== null);
+      if (empty.length > 0) {
+        let randIdx = empty[Math.floor(Math.random() * empty.length)];
+        let cells = document.querySelectorAll('.ttt-cell');
+        handleTTTMove(randIdx, cells[randIdx]);
+      }
+    }
+    function checkTTTWinner() {
+      const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      return wins.some(([a,b,c]) => tttState[a] && tttState[a] === tttState[b] && tttState[a] === tttState[c]);
     }
 
     /* --- 4. REACTION TAP --- */
@@ -216,10 +353,10 @@
 
     /* --- 5. MEMORY MATCH --- */
     const icons = ['⭐','🍎','🚗','💎','⭐','🍎','🚗','💎'];
-    let flipped = [], matched = 0;
+    let flipped = [];
     function initMemory() {
       const g = document.getElementById('mem-grid'); g.innerHTML = '';
-      flipped = []; matched = 0;
+      flipped = [];
       icons.sort(() => 0.5 - Math.random()).forEach((icon) => {
         let c = document.createElement('div');
         c.className = 'mem-card';
@@ -235,7 +372,7 @@
                 setTimeout(() => {
                   flipped.forEach(el => { el.classList.remove('flipped'); el.innerText = ''; });
                   flipped = [];
-                }, 700);
+                }, 600);
               }
             }
           }
@@ -246,20 +383,20 @@
 
     /* --- 6. BRICK BREAKER --- */
     let bCtx = document.getElementById('brickCanvas').getContext('2d');
-    let bxPos = 160, byPos = 200, bdx = 2, bdy = -2, padX = 130, brickDir = 0, brLoop;
+    let bxPos = 160, byPos = 180, bdx = 2.5, bdy = -2.5, padX = 130, brickDir = 0, brLoop;
     let bricks = [];
     function initBricks() {
       cancelAnimationFrame(brLoop);
       bricks = [];
       for(let r=0; r<3; r++) for(let c=0; c<5; c++) bricks.push({x: c*60+15, y: r*20+20, active: true});
-      bxPos = 160; byPos = 200; bdx = 2; bdy = -2; padX = 130;
+      bxPos = 160; byPos = 180; bdx = 2.5; bdy = -2.5; padX = 130;
       function loop() {
         padX = Math.max(0, Math.min(260, padX + brickDir * 5));
         bxPos += bdx; byPos += bdy;
         if(bxPos <= 5 || bxPos >= 315) bdx *= -1;
         if(byPos <= 5) bdy *= -1;
-        if(byPos >= 300 && bxPos >= padX && bxPos <= padX + 60) bdy = -Math.abs(bdy);
-        if(byPos > 320) return initBricks();
+        if(byPos >= 260 && bxPos >= padX && bxPos <= padX + 60) bdy = -Math.abs(bdy);
+        if(byPos > 280) return initBricks();
 
         bricks.forEach(b => {
           if(b.active && bxPos >= b.x && bxPos <= b.x+50 && byPos >= b.y && byPos <= b.y+15) {
@@ -267,8 +404,8 @@
           }
         });
 
-        bCtx.clearRect(0,0,320,320);
-        bCtx.fillStyle = "#38bdf8"; bCtx.fillRect(padX, 305, 60, 8);
+        bCtx.clearRect(0,0,320,280);
+        bCtx.fillStyle = "#38bdf8"; bCtx.fillRect(padX, 265, 60, 8);
         bCtx.fillStyle = "#facc15"; bCtx.beginPath(); bCtx.arc(bxPos, byPos, 5, 0, Math.PI*2); bCtx.fill();
         bCtx.fillStyle = "#f43f5e";
         bricks.forEach(b => { if(b.active) bCtx.fillRect(b.x, b.y, 50, 15); });
@@ -278,7 +415,7 @@
     }
 
     // Default Load
-    initPong();
+    resetPongMatch();
   </script>
 </body>
-  </html>
+</html>
