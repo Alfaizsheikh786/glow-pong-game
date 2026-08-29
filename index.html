@@ -70,9 +70,21 @@
     <button class="menu-btn" onclick="switchGame('reaction')">4. Reaction</button>
     <button class="menu-btn" onclick="switchGame('memory')">5. Memory</button>
     <button class="menu-btn" onclick="switchGame('bricks')">6. Bricks</button>
+    <button class="menu-btn" onclick="switchGame('word')">7. Word</button>
   </div>
 
   <div class="stage">
+
+    <div id="game-word" class="game-view">
+  <div class="score-board"><span class="p1-color">Guess 4-Letter Word</span></div>
+  <div class="word-grid" id="word-grid" style="display:flex; flex-direction:column; gap:6px; margin:10px 0;"></div>
+  <div class="word-msg" id="word-msg" style="font-size:13px; color:#38bdf8; min-height:18px; margin-top:6px; font-weight:600;"></div>
+  <div class="word-input-row" id="word-inputs" style="display:flex; gap:6px; margin-top:8px;">
+    <input type="text" id="word-val" maxlength="4" placeholder="WORD" style="width:140px; text-transform:uppercase; background:#1e293b; border:1px solid #38bdf8; border-radius:6px; color:white; padding:8px; font-size:16px; text-align:center; letter-spacing:4px; font-weight:bold;" />
+    <button class="btn-action" style="margin-top:0;" onclick="submitGuess()">Enter</button>
+  </div>
+  <button class="btn-action" id="word-reset-btn" style="display:none;" onclick="initWordGame()">Play Again</button>
+    </div>
     
     <div id="game-pong" class="game-view active">
       <div class="mode-bar">
@@ -418,6 +430,85 @@
 
     // Default Load
     resetPongMatch();
+    /* --- 7. WORD GUESS GAME --- */
+const wordList = ["PLAY", "GAME", "CODE", "FIRE", "STAR", "NEON", "FAST", "JUMP", "HERO", "COOL", "MOON", "BALL"];
+let secretWord = "", wordRow = 0, maxTries = 4, wordGameOver = false;
+
+function initWordGame() {
+  secretWord = wordList[Math.floor(Math.random() * wordList.length)];
+  wordRow = 0; wordGameOver = false;
+  let msg = document.getElementById('word-msg');
+  if(msg) msg.innerText = '';
+  let input = document.getElementById('word-val');
+  if(input) { input.value = ''; input.disabled = false; }
+  let inputRow = document.getElementById('word-inputs');
+  if(inputRow) inputRow.style.display = 'flex';
+  let resetBtn = document.getElementById('word-reset-btn');
+  if(resetBtn) resetBtn.style.display = 'none';
+
+  let grid = document.getElementById('word-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  for (let r = 0; r < maxTries; r++) {
+    let rowDiv = document.createElement('div');
+    rowDiv.style.display = 'flex';
+    rowDiv.style.gap = '6px';
+    for (let c = 0; c < 4; c++) {
+      let tile = document.createElement('div');
+      tile.id = `tile-${r}-${c}`;
+      tile.style.cssText = "width:42px; height:42px; border:2px solid #334155; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; text-transform:uppercase; background:#1e293b; color:white;";
+      rowDiv.appendChild(tile);
+    }
+    grid.appendChild(rowDiv);
+  }
+}
+
+function submitGuess() {
+  if (wordGameOver) return;
+  let input = document.getElementById('word-val');
+  let guess = input.value.trim().toUpperCase();
+  let msg = document.getElementById('word-msg');
+
+  if (guess.length !== 4) {
+    msg.innerText = 'Must be 4 letters!';
+    return;
+  }
+  msg.innerText = '';
+
+  for (let i = 0; i < 4; i++) {
+    let tile = document.getElementById(`tile-${wordRow}-${i}`);
+    tile.innerText = guess[i];
+    if (guess[i] === secretWord[i]) {
+      tile.style.background = '#22c55e';
+      tile.style.borderColor = '#22c55e';
+      tile.style.color = '#020617';
+    } else if (secretWord.includes(guess[i])) {
+      tile.style.background = '#eab308';
+      tile.style.borderColor = '#eab308';
+      tile.style.color = '#020617';
+    } else {
+      tile.style.background = '#475569';
+      tile.style.borderColor = '#475569';
+    }
+  }
+
+  if (guess === secretWord) {
+    msg.innerText = '🎉 Correct Guess!';
+    wordGameOver = true;
+    input.disabled = true;
+    document.getElementById('word-reset-btn').style.display = 'inline-block';
+    return;
+  }
+
+  wordRow++;
+  input.value = '';
+  if (wordRow >= maxTries) {
+    msg.innerText = `Game Over! Word: ${secretWord}`;
+    wordGameOver = true;
+    input.disabled = true;
+    document.getElementById('word-reset-btn').style.display = 'inline-block';
+  }
+}
   </script>
 </body>
 </html>
