@@ -70,7 +70,7 @@
     <button class="menu-btn" onclick="switchGame('reaction')">4. Reaction</button>
     <button class="menu-btn" onclick="switchGame('memory')">5. Memory</button>
     <button class="menu-btn" onclick="switchGame('bricks')">6. Bricks</button>
-    <button class="menu-btn" onclick="switchGame('word')">7. Word</button>
+    <button class="menu-btn" onclick="switchGame('game-word')">7. Word</button>
   </div>
 
   <div class="stage">
@@ -169,6 +169,7 @@
       if(gameId === 'reaction') resetReaction();
       if(gameId === 'memory') initMemory();
       if(gameId === 'bricks') initBricks();
+      if(gameId === 'word') initWordGame();
     }
 
     /* --- 1. PONG WITH AI & SCORE SYSTEM --- */
