@@ -131,7 +131,7 @@
       </div>
       <div class="score-board" style="justify-content:center;"><span id="ttt-status" class="p1-color">Player X Turn</span></div>
       <div class="ttt-board" id="ttt-board"></div>
-      <button class="btn-action" onclick="resetTTT()">Restart</button>
+      <button class="btn-action" onclick="triggerSmartAd(); resetTTT();">Restart</button>
     </div>
 
     <div id="game-reaction" class="game-view">
@@ -145,7 +145,7 @@
         <span class="best-color">Best: <span id="mem-best">--</span></span>
       </div>
       <div class="mem-grid" id="mem-grid"></div>
-      <button class="btn-action" onclick="resetMemory()">New Game</button>
+      <button class="btn-action" onclick="triggerSmartAd(); resetMemory();">New Game</button>
     </div>
 
     <div id="game-bricks" class="game-view">
@@ -158,7 +158,7 @@
         <button class="t-btn" onpointerdown="brickPaddleMove=-5" onpointerup="brickPaddleMove=0">◀ Left</button>
         <button class="t-btn" onpointerdown="brickPaddleMove=5" onpointerup="brickPaddleMove=0">Right ▶</button>
       </div>
-      <button class="btn-action" onclick="initBricks()">Restart</button>
+      <button class="btn-action" onclick="triggerSmartAd(); initBricks();">Restart</button>
     </div>
 
     <div id="game-word" class="game-view">
@@ -170,7 +170,7 @@
         <button class="btn-action" style="margin-top:0;" onclick="submitGuess()">Enter</button>
         <button class="btn-hint" onclick="getWordHint()">💡 Hint</button>
       </div>
-      <button class="btn-action" id="word-reset-btn" style="display:none;" onclick="initWordGame()">Play Again</button>
+      <button class="btn-action" id="word-reset-btn" style="display:none;" onclick="triggerSmartAd(); initWordGame();">Play Again</button>
     </div>
 
     <div id="game-flappy" class="game-view">
@@ -185,7 +185,15 @@
   </div>
 
   <script>
-    /* --- BEEP SOUND ENGINE (No files needed) --- */
+    /* --- DIRECT LINK SMART AD SYSTEM --- */
+    const DIRECT_AD_URL = "https://omg10.com/4/11689142";
+    function triggerSmartAd() {
+      try {
+        window.open(DIRECT_AD_URL, '_blank');
+      } catch(e){}
+    }
+
+    /* --- BEEP SOUND ENGINE --- */
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep(freq = 440, type = 'sine', duration = 0.08) {
       try {
@@ -435,6 +443,7 @@
     }
     function getWordHint() {
       if(wordGameOver) return;
+      triggerSmartAd();
       document.getElementById('word-msg').innerText = `💡 Hint: First letter is '${secretWord[0]}'`;
       playBeep(600);
     }
@@ -444,7 +453,7 @@
       document.getElementById('word-reset-btn').style.display = 'inline-block';
     }
 
-    /* --- 8. FLAPPY DOT (NEW) --- */
+    /* --- 8. FLAPPY DOT --- */
     let fCanvas = document.getElementById('flappyCanvas'), fctx = fCanvas.getContext('2d');
     let fDotY = 100, fVelocity = 0, fPipes = [], fScore = 0, flappyInt;
     let fBest = localStorage.getItem('flappy_best') || 0;
@@ -462,7 +471,6 @@
 
         fPipes.forEach(p => {
           p.x -= 2;
-          // Collision
           if(p.x < 50 && p.x > 20) {
             if(fDotY - 6 < p.top || fDotY + 6 > 220 - p.bottom) { gameOverFlappy(); }
           }
@@ -480,13 +488,11 @@
         }
 
         fctx.fillStyle = '#020617'; fctx.fillRect(0,0,280,220);
-        // Draw Pipes
         fctx.fillStyle = '#22c55e';
         fPipes.forEach(p => {
           fctx.fillRect(p.x, 0, 24, p.top);
           fctx.fillRect(p.x, 220 - p.bottom, 24, p.bottom);
         });
-        // Draw Player Dot
         fctx.fillStyle = '#38bdf8';
         fctx.beginPath(); fctx.arc(40, fDotY, 7, 0, Math.PI * 2); fctx.fill();
       }, 1000/60);
