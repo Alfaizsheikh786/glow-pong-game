@@ -42,8 +42,14 @@
     /* Buttons */
     .btn-action { background: #38bdf8; color: #0b0f19; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; font-size: 12px; }
     .btn-hint { background: #f59e0b; color: #020617; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; }
+    .btn-revive { background: #a855f7; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; box-shadow: 0 0 10px rgba(168,85,247,0.4); margin-top: 6px; }
+    .btn-double { background: #ec4899; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; margin-top: 6px; }
     .touch-controls { display: flex; justify-content: space-between; width: 100%; max-width: 320px; margin-top: 8px; }
     .t-btn { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: bold; }
+
+    /* Overlay Modal for Revive */
+    .modal-overlay { display: none; position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(11,15,25,0.92); border-radius:16px; flex-direction:column; align-items:center; justify-content:center; gap:10px; z-index: 50; }
+    .modal-overlay.active { display: flex; }
 
     /* Tic-Tac-Toe */
     .ttt-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 230px; height: 230px; margin: 8px 0; }
@@ -81,6 +87,7 @@
     <button class="share-btn" onclick="shareOnWhatsApp()">📲 WhatsApp Challenge</button>
   </div>
 
+  <!-- 8 Buttons Grid -->
   <div class="menu-grid">
     <button class="menu-btn active" onclick="switchGame('pong')">1. Pong</button>
     <button class="menu-btn" onclick="switchGame('snake')">2. Snake</button>
@@ -94,6 +101,16 @@
 
   <div class="stage">
 
+    <!-- REWARDED / REVIVE MODAL OVERLAY -->
+    <div id="revive-modal" class="modal-overlay">
+      <h2 id="modal-title" style="color:#ef4444; font-size:18px;">Game Over!</h2>
+      <p id="modal-desc" style="color:#cbd5e1; font-size:12px;">Save score & continue?</p>
+      <button class="btn-revive" onclick="handleReviveAction()">❤️ Revive (+1 Life)</button>
+      <button class="btn-double" id="double-btn" onclick="handleDoubleScoreAction()">💎 2X My Score</button>
+      <button class="btn-action" style="background:#475569; color:#fff;" onclick="closeModalAndRestart()">Skip & Restart</button>
+    </div>
+
+    <!-- 1. PONG -->
     <div id="game-pong" class="game-view active">
       <div class="mode-bar">
         <button id="pong-ai" class="mode-btn active" onclick="setPongMode('ai')">🤖 Vs AI</button>
@@ -110,6 +127,7 @@
       </div>
     </div>
 
+    <!-- 2. SNAKE -->
     <div id="game-snake" class="game-view">
       <div class="score-board">
         <span class="p1-color">Score: <span id="snake-score">0</span></span>
@@ -124,6 +142,7 @@
       </div>
     </div>
 
+    <!-- 3. TIC TAC TOE -->
     <div id="game-ttt" class="game-view">
       <div class="mode-bar">
         <button id="ttt-ai" class="mode-btn active" onclick="setTTTMode('ai')">🤖 Vs AI</button>
@@ -131,23 +150,26 @@
       </div>
       <div class="score-board" style="justify-content:center;"><span id="ttt-status" class="p1-color">Player X Turn</span></div>
       <div class="ttt-board" id="ttt-board"></div>
-      <button class="btn-action" onclick="triggerSmartAd(); resetTTT();">Restart</button>
+      <button class="btn-action" onclick="checkInterMatchAd(); resetTTT();">Restart</button>
     </div>
 
+    <!-- 4. REACTION -->
     <div id="game-reaction" class="game-view">
       <div id="reaction-box" class="reaction-box" style="background:#ef4444;" onclick="handleReactionClick()">Tap when GREEN</div>
       <div class="score-board" style="margin-top:10px; justify-content:center;"><span class="best-color">Best: <span id="react-best">--</span> ms</span></div>
     </div>
 
+    <!-- 5. MEMORY -->
     <div id="game-memory" class="game-view">
       <div class="score-board">
         <span class="p1-color">Moves: <span id="mem-moves">0</span></span>
         <span class="best-color">Best: <span id="mem-best">--</span></span>
       </div>
       <div class="mem-grid" id="mem-grid"></div>
-      <button class="btn-action" onclick="triggerSmartAd(); resetMemory();">New Game</button>
+      <button class="btn-action" onclick="checkInterMatchAd(); resetMemory();">New Game</button>
     </div>
 
+    <!-- 6. BRICKS -->
     <div id="game-bricks" class="game-view">
       <div class="score-board">
         <span class="p1-color">Score: <span id="bricks-score">0</span></span>
@@ -158,9 +180,10 @@
         <button class="t-btn" onpointerdown="brickPaddleMove=-5" onpointerup="brickPaddleMove=0">◀ Left</button>
         <button class="t-btn" onpointerdown="brickPaddleMove=5" onpointerup="brickPaddleMove=0">Right ▶</button>
       </div>
-      <button class="btn-action" onclick="triggerSmartAd(); initBricks();">Restart</button>
+      <button class="btn-action" onclick="checkInterMatchAd(); initBricks();">Restart</button>
     </div>
 
+    <!-- 7. WORD GUESS -->
     <div id="game-word" class="game-view">
       <div class="score-board" style="justify-content:center;"><span class="p1-color">Guess 4-Letter Word</span></div>
       <div class="word-grid" id="word-grid"></div>
@@ -170,9 +193,10 @@
         <button class="btn-action" style="margin-top:0;" onclick="submitGuess()">Enter</button>
         <button class="btn-hint" onclick="getWordHint()">💡 Hint</button>
       </div>
-      <button class="btn-action" id="word-reset-btn" style="display:none;" onclick="triggerSmartAd(); initWordGame();">Play Again</button>
+      <button class="btn-action" id="word-reset-btn" style="display:none;" onclick="checkInterMatchAd(); initWordGame();">Play Again</button>
     </div>
 
+    <!-- 8. FLAPPY DOT -->
     <div id="game-flappy" class="game-view">
       <div class="score-board">
         <span class="p1-color">Score: <span id="flappy-score">0</span></span>
@@ -187,10 +211,66 @@
   <script>
     /* --- DIRECT LINK SMART AD SYSTEM --- */
     const DIRECT_AD_URL = "https://omg10.com/4/11689142";
-    function triggerSmartAd() {
+    let matchCounter = 0;
+    let currentGameOverGame = null;
+
+    function triggerDirectAd() {
       try {
         window.open(DIRECT_AD_URL, '_blank');
       } catch(e){}
+    }
+
+    // Auto trigger ad every 3 matches
+    function checkInterMatchAd() {
+      matchCounter++;
+      if (matchCounter % 3 === 0) {
+        triggerDirectAd();
+      }
+    }
+
+    // Modal Operations
+    function showGameOverModal(gameName, score) {
+      currentGameOverGame = gameName;
+      document.getElementById('modal-title').innerText = `${gameName.toUpperCase()} OVER!`;
+      document.getElementById('modal-desc').innerText = `Current Score: ${score}`;
+      document.getElementById('revive-modal').classList.add('active');
+    }
+
+    function handleReviveAction() {
+      triggerDirectAd();
+      document.getElementById('revive-modal').classList.remove('active');
+      if (currentGameOverGame === 'snake') {
+        snake = [{x: 10, y: 10}];
+        sDir = 'RIGHT';
+        startSnake(true); // resume with existing score
+      } else if (currentGameOverGame === 'flappy') {
+        fDotY = 100;
+        fVelocity = 0;
+        fPipes = [{ x: 280, top: 60, bottom: 100 }];
+        initFlappy(true); // resume with existing score
+      }
+    }
+
+    function handleDoubleScoreAction() {
+      triggerDirectAd();
+      document.getElementById('revive-modal').classList.remove('active');
+      if (currentGameOverGame === 'snake') {
+        sScore = sScore * 2;
+        document.getElementById('snake-score').innerText = sScore;
+        if (sScore > sBest) { sBest = sScore; localStorage.setItem('snake_best', sBest); document.getElementById('snake-best').innerText = sBest; }
+      } else if (currentGameOverGame === 'flappy') {
+        fScore = fScore * 2;
+        document.getElementById('flappy-score').innerText = fScore;
+        if (fScore > fBest) { fBest = fScore; localStorage.setItem('flappy_best', fBest); document.getElementById('flappy-best').innerText = fBest; }
+      }
+      closeModalAndRestart();
+    }
+
+    function closeModalAndRestart() {
+      document.getElementById('revive-modal').classList.remove('active');
+      checkInterMatchAd();
+      if (currentGameOverGame === 'snake') startSnake(false);
+      if (currentGameOverGame === 'flappy') initFlappy(false);
     }
 
     /* --- BEEP SOUND ENGINE --- */
@@ -263,16 +343,24 @@
     let snake = [{x:5,y:5}], sDir = 'RIGHT', sFood = {x:10,y:10}, sScore = 0, sInt;
     let sBest = localStorage.getItem('snake_best') || 0;
     document.getElementById('snake-best').innerText = sBest;
-    function startSnake(){
-      clearInterval(sInt); snake=[{x:5,y:5}]; sScore=0; document.getElementById('snake-score').innerText=0;
+
+    function startSnake(isRevive = false){
+      clearInterval(sInt);
+      if(!isRevive) {
+        snake = [{x:5,y:5}];
+        sScore = 0;
+        document.getElementById('snake-score').innerText = 0;
+      }
       sInt = setInterval(() => {
         if(activeTab !== 'snake') return;
         let head = {...snake[0]};
         if(sDir==='UP') head.y--; if(sDir==='DOWN') head.y++; if(sDir==='LEFT') head.x--; if(sDir==='RIGHT') head.x++;
         if(head.x<0||head.x>=28||head.y<0||head.y>=20||snake.some(s=>s.x===head.x&&s.y===head.y)){
           playBeep(150, 'sawtooth', 0.2);
+          clearInterval(sInt);
           if(sScore > sBest){ sBest = sScore; localStorage.setItem('snake_best', sBest); document.getElementById('snake-best').innerText = sBest; }
-          startSnake(); return;
+          showGameOverModal('snake', sScore);
+          return;
         }
         snake.unshift(head);
         if(head.x===sFood.x && head.y===sFood.y){
@@ -298,8 +386,8 @@
       if(tttGrid[i] || checkTTTWinner()) return;
       playBeep(tttTurn==='X'?500:600);
       tttGrid[i] = tttTurn; updateTTTUI();
-      if(checkTTTWinner()){ playBeep(800,'triangle',0.3); document.getElementById('ttt-status').innerText=`${tttTurn} Won! 🎉`; return; }
-      if(!tttGrid.includes(null)){ document.getElementById('ttt-status').innerText="Draw! 🤝"; return; }
+      if(checkTTTWinner()){ playBeep(800,'triangle',0.3); document.getElementById('ttt-status').innerText=`${tttTurn} Won! 🎉`; checkInterMatchAd(); return; }
+      if(!tttGrid.includes(null)){ document.getElementById('ttt-status').innerText="Draw! 🤝"; checkInterMatchAd(); return; }
       tttTurn = tttTurn === 'X' ? 'O' : 'X';
       document.getElementById('ttt-status').innerText = `${tttTurn} Turn`;
       if(tttMode==='ai' && tttTurn==='O'){ setTimeout(()=>{ let empty = tttGrid.map((v,idx)=>v===null?idx:null).filter(v=>v!==null); if(empty.length) makeTTTMove(empty[Math.floor(Math.random()*empty.length)]); }, 250); }
@@ -324,6 +412,7 @@
       else {
         let diff = Date.now() - startTime; reactBox.style.background = '#38bdf8'; reactBox.innerText = `${diff} ms! Tap to retry`; readyForClick = false; playBeep(750);
         if(reactBest === '--' || diff < parseInt(reactBest)){ reactBest = diff; localStorage.setItem('react_best', reactBest); document.getElementById('react-best').innerText = reactBest; }
+        checkInterMatchAd();
       }
     }
     startReactionGame();
@@ -352,6 +441,7 @@
           playBeep(700); flipped = [];
           if(document.querySelectorAll('.mem-card.flipped').length === 12){
             if(memBest === '--' || moves < parseInt(memBest)){ memBest = moves; localStorage.setItem('mem_best', memBest); document.getElementById('mem-best').innerText = memBest; }
+            checkInterMatchAd();
           }
         } else { setTimeout(()=>{ flipped.forEach(f=>{ f.el.innerText=''; f.el.classList.remove('flipped'); }); flipped=[]; }, 600); }
       }
@@ -443,7 +533,7 @@
     }
     function getWordHint() {
       if(wordGameOver) return;
-      triggerSmartAd();
+      triggerDirectAd();
       document.getElementById('word-msg').innerText = `💡 Hint: First letter is '${secretWord[0]}'`;
       playBeep(600);
     }
@@ -459,11 +549,13 @@
     let fBest = localStorage.getItem('flappy_best') || 0;
     document.getElementById('flappy-best').innerText = fBest;
 
-    function initFlappy() {
+    function initFlappy(isRevive = false) {
       clearInterval(flappyInt);
-      fDotY = 100; fVelocity = 0; fScore = 0; fPipes = [];
-      document.getElementById('flappy-score').innerText = 0;
-      fPipes.push({ x: 280, top: 60, bottom: 100 });
+      if(!isRevive) {
+        fDotY = 100; fVelocity = 0; fScore = 0; fPipes = [];
+        document.getElementById('flappy-score').innerText = 0;
+        fPipes.push({ x: 280, top: 60, bottom: 100 });
+      }
 
       flappyInt = setInterval(() => {
         if(activeTab !== 'flappy') return;
@@ -500,8 +592,9 @@
     function flap() { fVelocity = -4.6; playBeep(450); }
     function gameOverFlappy() {
       playBeep(180, 'sawtooth', 0.25);
+      clearInterval(flappyInt);
       if(fScore > fBest) { fBest = fScore; localStorage.setItem('flappy_best', fBest); document.getElementById('flappy-best').innerText = fBest; }
-      initFlappy();
+      showGameOverModal('flappy', fScore);
     }
 
     // Default Load
@@ -509,6 +602,7 @@
     initWordGame();
   </script>
 
+  <!-- In-Page Push DOM Trigger -->
   <script>(function(s){s.dataset.zone='11679754',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 </body>
 </html>
