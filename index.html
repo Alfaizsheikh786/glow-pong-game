@@ -24,7 +24,7 @@
     .menu-btn.active, .menu-btn:hover { background: #38bdf8; color: #0b0f19; border-color: #38bdf8; font-weight: 800; box-shadow: 0 0 10px rgba(56,189,248,0.4); }
 
     /* Game Stage */
-    .stage { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; width: 100%; max-width: 480px; min-height: 380px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+    .stage { background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; width: 100%; max-width: 480px; min-height: 420px; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
     .game-view { display: none; width: 100%; flex-direction: column; align-items: center; justify-content: center; }
     .game-view.active { display: flex; }
 
@@ -41,6 +41,7 @@
 
     /* Buttons */
     .btn-action { background: #38bdf8; color: #0b0f19; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; font-size: 12px; }
+    .btn-start { background: #22c55e; color: #020617; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 8px; font-size: 13px; box-shadow: 0 0 10px rgba(34,197,94,0.4); }
     .btn-hint { background: #f59e0b; color: #020617; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; }
     .btn-revive { background: #a855f7; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; box-shadow: 0 0 10px rgba(168,85,247,0.4); margin-top: 6px; }
     .btn-double { background: #ec4899; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; margin-top: 6px; }
@@ -123,6 +124,7 @@
       <canvas id="pongCanvas" width="320" height="200"></canvas>
       <div class="touch-controls">
         <button class="t-btn" onpointerdown="pongP1Move=-4" onpointerup="pongP1Move=0">▲ Up</button>
+        <button class="btn-start" id="pong-start-btn" onclick="startPongLoop()">▶ Start Game</button>
         <button class="t-btn" onpointerdown="pongP1Move=4" onpointerup="pongP1Move=0">▼ Down</button>
       </div>
     </div>
@@ -140,6 +142,7 @@
         <button class="t-btn" onclick="changeSnakeDir('DOWN')">▼</button>
         <button class="t-btn" onclick="changeSnakeDir('RIGHT')">▶</button>
       </div>
+      <button class="btn-start" id="snake-start-btn" onclick="startSnakeLoop()">▶ Start Game</button>
     </div>
 
     <!-- 3. TIC TAC TOE -->
@@ -180,7 +183,7 @@
         <button class="t-btn" onpointerdown="brickPaddleMove=-5" onpointerup="brickPaddleMove=0">◀ Left</button>
         <button class="t-btn" onpointerdown="brickPaddleMove=5" onpointerup="brickPaddleMove=0">Right ▶</button>
       </div>
-      <button class="btn-action" onclick="checkInterMatchAd(); initBricks();">Restart</button>
+      <button class="btn-start" id="bricks-start-btn" onclick="startBricksLoop()">▶ Start Game</button>
     </div>
 
     <!-- 7. WORD GUESS -->
@@ -196,14 +199,15 @@
       <button class="btn-action" id="word-reset-btn" style="display:none;" onclick="checkInterMatchAd(); initWordGame();">Play Again</button>
     </div>
 
-    <!-- 8. FLAPPY DOT -->
+    <!-- 8. FLAPPY DOT (Bigger Screen) -->
     <div id="game-flappy" class="game-view">
       <div class="score-board">
         <span class="p1-color">Score: <span id="flappy-score">0</span></span>
         <span class="best-color">Best: <span id="flappy-best">0</span></span>
       </div>
-      <canvas id="flappyCanvas" width="280" height="220"></canvas>
-      <button class="btn-action" style="width:100%; max-width:280px; padding:12px; font-size:14px; margin-top:8px;" onpointerdown="flap()">🚀 TAP TO JUMP</button>
+      <canvas id="flappyCanvas" width="320" height="300"></canvas>
+      <button class="btn-start" id="flappy-start-btn" onclick="startFlappyLoop()">▶ Start Game</button>
+      <button class="btn-action" id="flappy-jump-btn" style="display:none; width:100%; max-width:320px; padding:12px; font-size:14px; margin-top:8px;" onpointerdown="flap()">🚀 TAP TO JUMP</button>
     </div>
 
   </div>
@@ -220,7 +224,6 @@
       } catch(e){}
     }
 
-    // Auto trigger ad every 3 matches
     function checkInterMatchAd() {
       matchCounter++;
       if (matchCounter % 3 === 0) {
@@ -228,7 +231,6 @@
       }
     }
 
-    // Modal Operations
     function showGameOverModal(gameName, score) {
       currentGameOverGame = gameName;
       document.getElementById('modal-title').innerText = `${gameName.toUpperCase()} OVER!`;
@@ -242,12 +244,12 @@
       if (currentGameOverGame === 'snake') {
         snake = [{x: 10, y: 10}];
         sDir = 'RIGHT';
-        startSnake(true); // resume with existing score
+        startSnakeLoop(true);
       } else if (currentGameOverGame === 'flappy') {
-        fDotY = 100;
+        fDotY = 150;
         fVelocity = 0;
-        fPipes = [{ x: 280, top: 60, bottom: 100 }];
-        initFlappy(true); // resume with existing score
+        fPipes = [{ x: 320, top: 80, bottom: 120 }];
+        startFlappyLoop(true);
       }
     }
 
@@ -269,8 +271,8 @@
     function closeModalAndRestart() {
       document.getElementById('revive-modal').classList.remove('active');
       checkInterMatchAd();
-      if (currentGameOverGame === 'snake') startSnake(false);
-      if (currentGameOverGame === 'flappy') initFlappy(false);
+      if (currentGameOverGame === 'snake') renderInitialSnake();
+      if (currentGameOverGame === 'flappy') renderInitialFlappy();
     }
 
     /* --- BEEP SOUND ENGINE --- */
@@ -305,21 +307,37 @@
       if(target) target.classList.add('active');
       if(event && event.target) event.target.classList.add('active');
 
-      if(name === 'pong') startPong();
-      if(name === 'snake') startSnake();
-      if(name === 'bricks') initBricks();
+      clearInterval(pongInt); clearInterval(sInt); clearInterval(bricksInt); clearInterval(flappyInt);
+
+      if(name === 'pong') renderInitialPong();
+      if(name === 'snake') renderInitialSnake();
+      if(name === 'bricks') renderInitialBricks();
       if(name === 'word') initWordGame();
-      if(name === 'flappy') initFlappy();
+      if(name === 'flappy') renderInitialFlappy();
     }
 
     /* --- 1. PONG --- */
     let pongCanvas = document.getElementById('pongCanvas'), pctx = pongCanvas.getContext('2d');
-    let p1Y = 70, p2Y = 70, bx = 160, by = 100, bvx = 3, bvy = 2, ps1 = 0, ps2 = 0, pongP1Move = 0, pongMode = 'ai', pongInt;
+    let p1Y = 70, p2Y = 70, bx = 160, by = 100, bvx = 3, bvy = 2, ps1 = 0, ps2 = 0, pongP1Move = 0, pongMode = 'ai', pongInt, pongRunning = false;
+    
     function setPongMode(m){ pongMode = m; document.getElementById('pong-ai').classList.toggle('active', m==='ai'); document.getElementById('pong-2p').classList.toggle('active', m==='2p'); document.getElementById('pong-p2-label').innerText = m==='ai'?'AI':'P2'; }
-    function startPong() {
+    
+    function renderInitialPong() {
+      pongRunning = false;
+      document.getElementById('pong-start-btn').style.display = 'inline-block';
+      pctx.fillStyle = '#020617'; pctx.fillRect(0,0,320,200);
+      pctx.fillStyle = '#22c55e'; pctx.fillRect(10, 70, 8, 50);
+      pctx.fillStyle = '#ef4444'; pctx.fillRect(302, 70, 8, 50);
+      pctx.fillStyle = '#eab308'; pctx.fillRect(156, 96, 8, 8);
+    }
+
+    function startPongLoop() {
+      document.getElementById('pong-start-btn').style.display = 'none';
+      pongRunning = true;
+      resetBall();
       clearInterval(pongInt);
       pongInt = setInterval(() => {
-        if(activeTab !== 'pong') return;
+        if(activeTab !== 'pong' || !pongRunning) return;
         p1Y = Math.max(0, Math.min(150, p1Y + pongP1Move));
         if(pongMode === 'ai') p2Y += (by - (p2Y + 25)) * 0.1;
         bx += bvx; by += bvy;
@@ -344,11 +362,20 @@
     let sBest = localStorage.getItem('snake_best') || 0;
     document.getElementById('snake-best').innerText = sBest;
 
-    function startSnake(isRevive = false){
+    function renderInitialSnake() {
+      clearInterval(sInt);
+      document.getElementById('snake-start-btn').style.display = 'inline-block';
+      sctx.fillStyle='#020617'; sctx.fillRect(0,0,280,200);
+      sctx.fillStyle='#22c55e'; sctx.fillRect(50, 50, 9, 9);
+    }
+
+    function startSnakeLoop(isRevive = false){
+      document.getElementById('snake-start-btn').style.display = 'none';
       clearInterval(sInt);
       if(!isRevive) {
         snake = [{x:5,y:5}];
         sScore = 0;
+        sDir = 'RIGHT';
         document.getElementById('snake-score').innerText = 0;
       }
       sInt = setInterval(() => {
@@ -453,7 +480,17 @@
     let bpX = 120, brickPaddleMove = 0, bbX = 150, bbY = 160, bbVx = 2.5, bbVy = -2.5, bScore = 0, bBricks = [], bricksInt;
     let bBest = localStorage.getItem('bricks_best') || 0;
     document.getElementById('bricks-best').innerText = bBest;
-    function initBricks(){
+
+    function renderInitialBricks() {
+      clearInterval(bricksInt);
+      document.getElementById('bricks-start-btn').style.display = 'inline-block';
+      bctx.fillStyle = '#020617'; bctx.fillRect(0,0,300,200);
+      bctx.fillStyle = '#38bdf8'; bctx.fillRect(120, 185, 60, 8);
+      bctx.fillStyle = '#eab308'; bctx.fillRect(146, 156, 8, 8);
+    }
+
+    function startBricksLoop(){
+      document.getElementById('bricks-start-btn').style.display = 'none';
       clearInterval(bricksInt); bScore = 0; bpX = 120; bbX = 150; bbY = 160; bbVx = 2.5; bbVy = -2.5;
       document.getElementById('bricks-score').innerText = 0;
       bBricks = [];
@@ -468,7 +505,7 @@
         if(bbY > 200){
           playBeep(180, 'sawtooth');
           if(bScore > bBest){ bBest = bScore; localStorage.setItem('bricks_best', bBest); document.getElementById('bricks-best').innerText = bBest; }
-          initBricks(); return;
+          renderInitialBricks(); return;
         }
         bBricks.forEach(b=>{
           if(b.alive && bbX >= b.x && bbX <= b.x + 44 && bbY >= b.y && bbY <= b.y + 14){
@@ -543,18 +580,29 @@
       document.getElementById('word-reset-btn').style.display = 'inline-block';
     }
 
-    /* --- 8. FLAPPY DOT --- */
+    /* --- 8. FLAPPY DOT (Bigger Canvas 320x300) --- */
     let fCanvas = document.getElementById('flappyCanvas'), fctx = fCanvas.getContext('2d');
-    let fDotY = 100, fVelocity = 0, fPipes = [], fScore = 0, flappyInt;
+    let fDotY = 150, fVelocity = 0, fPipes = [], fScore = 0, flappyInt;
     let fBest = localStorage.getItem('flappy_best') || 0;
     document.getElementById('flappy-best').innerText = fBest;
 
-    function initFlappy(isRevive = false) {
+    function renderInitialFlappy() {
+      clearInterval(flappyInt);
+      document.getElementById('flappy-start-btn').style.display = 'inline-block';
+      document.getElementById('flappy-jump-btn').style.display = 'none';
+      fctx.fillStyle = '#020617'; fctx.fillRect(0,0,320,300);
+      fctx.fillStyle = '#38bdf8';
+      fctx.beginPath(); fctx.arc(40, 150, 8, 0, Math.PI * 2); fctx.fill();
+    }
+
+    function startFlappyLoop(isRevive = false) {
+      document.getElementById('flappy-start-btn').style.display = 'none';
+      document.getElementById('flappy-jump-btn').style.display = 'block';
       clearInterval(flappyInt);
       if(!isRevive) {
-        fDotY = 100; fVelocity = 0; fScore = 0; fPipes = [];
+        fDotY = 150; fVelocity = 0; fScore = 0; fPipes = [];
         document.getElementById('flappy-score').innerText = 0;
-        fPipes.push({ x: 280, top: 60, bottom: 100 });
+        fPipes.push({ x: 320, top: 90, bottom: 120 });
       }
 
       flappyInt = setInterval(() => {
@@ -564,7 +612,7 @@
         fPipes.forEach(p => {
           p.x -= 2;
           if(p.x < 50 && p.x > 20) {
-            if(fDotY - 6 < p.top || fDotY + 6 > 220 - p.bottom) { gameOverFlappy(); }
+            if(fDotY - 8 < p.top || fDotY + 8 > 300 - p.bottom) { gameOverFlappy(); }
           }
           if(p.x === 20) {
             fScore++; playBeep(680);
@@ -572,24 +620,24 @@
           }
         });
 
-        if(fDotY <= 5 || fDotY >= 215) { gameOverFlappy(); }
+        if(fDotY <= 6 || fDotY >= 294) { gameOverFlappy(); }
         if(fPipes.length && fPipes[0].x < -30) {
           fPipes.shift();
-          let topH = Math.floor(Math.random() * 80) + 30;
-          fPipes.push({ x: 280, top: topH, bottom: 220 - topH - 75 });
+          let topH = Math.floor(Math.random() * 110) + 40;
+          fPipes.push({ x: 320, top: topH, bottom: 300 - topH - 90 });
         }
 
-        fctx.fillStyle = '#020617'; fctx.fillRect(0,0,280,220);
+        fctx.fillStyle = '#020617'; fctx.fillRect(0,0,320,300);
         fctx.fillStyle = '#22c55e';
         fPipes.forEach(p => {
-          fctx.fillRect(p.x, 0, 24, p.top);
-          fctx.fillRect(p.x, 220 - p.bottom, 24, p.bottom);
+          fctx.fillRect(p.x, 0, 26, p.top);
+          fctx.fillRect(p.x, 300 - p.bottom, 26, p.bottom);
         });
         fctx.fillStyle = '#38bdf8';
-        fctx.beginPath(); fctx.arc(40, fDotY, 7, 0, Math.PI * 2); fctx.fill();
+        fctx.beginPath(); fctx.arc(40, fDotY, 8, 0, Math.PI * 2); fctx.fill();
       }, 1000/60);
     }
-    function flap() { fVelocity = -4.6; playBeep(450); }
+    function flap() { fVelocity = -4.8; playBeep(450); }
     function gameOverFlappy() {
       playBeep(180, 'sawtooth', 0.25);
       clearInterval(flappyInt);
@@ -597,8 +645,8 @@
       showGameOverModal('flappy', fScore);
     }
 
-    // Default Load
-    startPong();
+    // Default Load Initial States
+    renderInitialPong();
     initWordGame();
   </script>
 
