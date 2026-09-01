@@ -14,6 +14,11 @@
     h1 { font-size: 22px; font-weight: 800; color: #38bdf8; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(56,189,248,0.3); }
     p { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 
+    /* Netlify Drawer CSS Hide */
+    iframe[data-netlify-drawer], [data-netlify-badge], .netlify-badge, netlify-drawer, [aria-label="Netlify Drawer"] { 
+      display: none !important; opacity: 0 !important; pointer-events: none !important; 
+    }
+
     /* Top Action Bar */
     .top-bar { display: flex; gap: 8px; margin-bottom: 10px; width: 100%; max-width: 480px; justify-content: center; }
     .share-btn { background: #22c55e; color: #020617; border: none; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(34,197,94,0.3); }
@@ -43,13 +48,13 @@
     .btn-action { background: #38bdf8; color: #0b0f19; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 8px; font-size: 12px; }
     .btn-start { background: #22c55e; color: #020617; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 8px; font-size: 13px; box-shadow: 0 0 10px rgba(34,197,94,0.4); }
     .btn-hint { background: #f59e0b; color: #020617; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; }
-    .btn-revive { background: #a855f7; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; box-shadow: 0 0 10px rgba(168,85,247,0.4); margin-top: 6px; }
-    .btn-double { background: #ec4899; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px; margin-top: 6px; }
+    .btn-revive { background: #a855f7; color: #fff; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; box-shadow: 0 0 10px rgba(168,85,247,0.4); margin-top: 6px; }
+    .btn-double { background: #ec4899; color: #fff; border: none; padding: 9px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; margin-top: 6px; }
     .touch-controls { display: flex; justify-content: space-between; width: 100%; max-width: 320px; margin-top: 8px; }
     .t-btn { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: bold; }
 
     /* Overlay Modal for Revive */
-    .modal-overlay { display: none; position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(11,15,25,0.92); border-radius:16px; flex-direction:column; align-items:center; justify-content:center; gap:10px; z-index: 50; }
+    .modal-overlay { display: none; position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(11,15,25,0.94); border-radius:16px; flex-direction:column; align-items:center; justify-content:center; gap:10px; z-index: 50; }
     .modal-overlay.active { display: flex; }
 
     /* Tic-Tac-Toe */
@@ -142,7 +147,7 @@
         <button class="t-btn" onclick="changeSnakeDir('DOWN')">▼</button>
         <button class="t-btn" onclick="changeSnakeDir('RIGHT')">▶</button>
       </div>
-      <button class="btn-start" id="snake-start-btn" onclick="startSnakeLoop()">▶ Start Game</button>
+      <button class="btn-start" id="snake-start-btn" onclick="startSnakeLoop(false)">▶ Start Game</button>
     </div>
 
     <!-- 3. TIC TAC TOE -->
@@ -206,7 +211,7 @@
         <span class="best-color">Best: <span id="flappy-best">0</span></span>
       </div>
       <canvas id="flappyCanvas" width="320" height="300"></canvas>
-      <button class="btn-start" id="flappy-start-btn" onclick="startFlappyLoop()">▶ Start Game</button>
+      <button class="btn-start" id="flappy-start-btn" onclick="startFlappyLoop(false)">▶ Start Game</button>
       <button class="btn-action" id="flappy-jump-btn" style="display:none; width:100%; max-width:320px; padding:12px; font-size:14px; margin-top:8px;" onpointerdown="flap()">🚀 TAP TO JUMP</button>
     </div>
 
@@ -217,6 +222,7 @@
     const DIRECT_AD_URL = "https://omg10.com/4/11689142";
     let matchCounter = 0;
     let currentGameOverGame = null;
+    let savedScore = 0;
 
     function triggerDirectAd() {
       try {
@@ -233,39 +239,48 @@
 
     function showGameOverModal(gameName, score) {
       currentGameOverGame = gameName;
+      savedScore = score;
       document.getElementById('modal-title').innerText = `${gameName.toUpperCase()} OVER!`;
-      document.getElementById('modal-desc').innerText = `Current Score: ${score}`;
+      document.getElementById('modal-desc').innerText = `Current Score: ${savedScore}`;
       document.getElementById('revive-modal').classList.add('active');
     }
 
+    /* Fixed Revive Logic: Score persists & game restarts immediately */
     function handleReviveAction() {
       triggerDirectAd();
       document.getElementById('revive-modal').classList.remove('active');
       if (currentGameOverGame === 'snake') {
-        snake = [{x: 10, y: 10}];
+        sScore = savedScore;
+        document.getElementById('snake-score').innerText = sScore;
+        snake = [{x: 10, y: 10}, {x: 9, y: 10}];
         sDir = 'RIGHT';
         startSnakeLoop(true);
       } else if (currentGameOverGame === 'flappy') {
+        fScore = savedScore;
+        document.getElementById('flappy-score').innerText = fScore;
         fDotY = 150;
         fVelocity = 0;
-        fPipes = [{ x: 320, top: 80, bottom: 120 }];
+        fPipes = [{ x: 320, top: 90, bottom: 120 }];
         startFlappyLoop(true);
       }
     }
 
+    /* Fixed 2X Score Logic */
     function handleDoubleScoreAction() {
       triggerDirectAd();
       document.getElementById('revive-modal').classList.remove('active');
       if (currentGameOverGame === 'snake') {
-        sScore = sScore * 2;
+        sScore = savedScore * 2;
         document.getElementById('snake-score').innerText = sScore;
         if (sScore > sBest) { sBest = sScore; localStorage.setItem('snake_best', sBest); document.getElementById('snake-best').innerText = sBest; }
+        renderInitialSnake();
       } else if (currentGameOverGame === 'flappy') {
-        fScore = fScore * 2;
+        fScore = savedScore * 2;
         document.getElementById('flappy-score').innerText = fScore;
         if (fScore > fBest) { fBest = fScore; localStorage.setItem('flappy_best', fBest); document.getElementById('flappy-best').innerText = fBest; }
+        renderInitialFlappy();
       }
-      closeModalAndRestart();
+      checkInterMatchAd();
     }
 
     function closeModalAndRestart() {
@@ -319,7 +334,6 @@
     /* --- 1. PONG --- */
     let pongCanvas = document.getElementById('pongCanvas'), pctx = pongCanvas.getContext('2d');
     let p1Y = 70, p2Y = 70, bx = 160, by = 100, bvx = 3, bvy = 2, ps1 = 0, ps2 = 0, pongP1Move = 0, pongMode = 'ai', pongInt, pongRunning = false;
-    
     function setPongMode(m){ pongMode = m; document.getElementById('pong-ai').classList.toggle('active', m==='ai'); document.getElementById('pong-2p').classList.toggle('active', m==='2p'); document.getElementById('pong-p2-label').innerText = m==='ai'?'AI':'P2'; }
     
     function renderInitialPong() {
@@ -580,7 +594,7 @@
       document.getElementById('word-reset-btn').style.display = 'inline-block';
     }
 
-    /* --- 8. FLAPPY DOT (Bigger Canvas 320x300) --- */
+    /* --- 8. FLAPPY DOT (320x300 Canvas) --- */
     let fCanvas = document.getElementById('flappyCanvas'), fctx = fCanvas.getContext('2d');
     let fDotY = 150, fVelocity = 0, fPipes = [], fScore = 0, flappyInt;
     let fBest = localStorage.getItem('flappy_best') || 0;
